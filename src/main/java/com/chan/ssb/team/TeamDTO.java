@@ -1,4 +1,4 @@
-package com.chan.ssb;
+package com.chan.ssb.team;
 
 public class TeamDTO {
     private long id;

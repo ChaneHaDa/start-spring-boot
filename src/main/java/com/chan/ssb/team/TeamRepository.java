@@ -1,4 +1,4 @@
-package com.chan.ssb;
+package com.chan.ssb.team;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
