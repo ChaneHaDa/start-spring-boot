@@ -9,40 +9,35 @@ import java.util.List;
 public class TeamController {
 
     // Team: id, name, city, championships
-    private final TeamRepository teamRepository;
 
-    public TeamController(TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
+    private final TeamService teamService;
+
+    public TeamController(TeamService teamService) {
+        this.teamService = teamService;
     }
-
     @GetMapping("")
     public List<TeamDTO> getAllTeams() {
-        List<Team> teams = teamRepository.findAll();
-        List<TeamDTO> returnTeams = teams.stream().map(TeamDTO::fromEntity).toList();
-        return returnTeams;
+        return teamService.getAllTeams();
     }
 
     @GetMapping("/{id}")
     public TeamDTO getTeam(@PathVariable long id) {
-        TeamDTO team = TeamDTO.fromEntity(teamRepository.findById(id).orElse(null));
-        return team;
+        return teamService.getTeamById(id);
     }
 
     @PostMapping("")
     public List<TeamDTO> createTeams(@RequestBody List<TeamDTO> teamDTOList) {
-        List<Team> newTeams = teamDTOList.stream().map(team -> new Team(team.getId(), team.getName(), team.getCity(), team.getChampionships())).toList();
-        return teamRepository.saveAll(newTeams).stream().map(TeamDTO::fromEntity).toList();
+        return teamService.createTeams(teamDTOList);
     }
 
     @PutMapping("/{id}")
     public TeamDTO updateTeam(@PathVariable long id, TeamDTO team) {
-        Team updateTeam = new Team(id, team.getName(), team.getCity(), team.getChampionships());
-        return TeamDTO.fromEntity(teamRepository.save(updateTeam));
+        return teamService.updateTeam(id, team);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTeam(@PathVariable long id) {
-        teamRepository.deleteById(id);
+        teamService.deleteTeam(id);
     }
 
 }
