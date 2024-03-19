@@ -1,7 +1,10 @@
 package com.chan.ssb.team;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RequestMapping("/team")
@@ -17,17 +20,51 @@ public class TeamController {
     }
     @GetMapping("")
     public List<TeamDTO> getAllTeams() {
-        return teamService.getAllTeams();
+        List<TeamDTO> teams = teamService.getAllTeams();
+        if(teams.isEmpty()) {
+            throw new TeamNotFoundException("No teams found");
+        }
+
+        return teams;
     }
 
     @GetMapping("/{id}")
     public TeamDTO getTeam(@PathVariable long id) {
-        return teamService.getTeamById(id);
+        TeamDTO team = teamService.getTeamById(id);
+        if(team == null) {
+            throw new TeamNotFoundException("Team not found with id: " + id);
+        }
+
+        return team;
     }
 
+
     @PostMapping("")
-    public List<TeamDTO> createTeams(@RequestBody List<TeamDTO> teamDTOList) {
-        return teamService.createTeams(teamDTOList);
+    public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {
+        TeamDTO savedTeam = teamService.createTeam(teamDTO);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedTeam.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<List<TeamDTO>> createTeams(@RequestBody List<TeamDTO> teamDTOList) {
+        teamService.createTeams(teamDTOList);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("")
+                .build()
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+
     }
 
     @PutMapping("/{id}")

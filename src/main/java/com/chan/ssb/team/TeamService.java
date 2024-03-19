@@ -22,6 +22,11 @@ public class TeamService {
         return returnTeams;
     }
 
+    public TeamDTO createTeam(TeamDTO teamDTO) {
+        Team newTeam = new Team(0, teamDTO.getName(), teamDTO.getCity(), teamDTO.getChampionships());
+        return TeamDTO.fromEntity(teamRepository.save(newTeam));
+    }
+
     public List<TeamDTO> createTeams(List<TeamDTO> teamDTOList) {
         List<Team> newTeams = teamDTOList.stream().map(team -> new Team(team.getId(), team.getName(), team.getCity(), team.getChampionships())).toList();
         return teamRepository.saveAll(newTeams).stream().map(TeamDTO::fromEntity).toList();
@@ -35,4 +40,6 @@ public class TeamService {
     public void deleteTeam(long id) {
         teamRepository.deleteById(id);
     }
+
+
 }
