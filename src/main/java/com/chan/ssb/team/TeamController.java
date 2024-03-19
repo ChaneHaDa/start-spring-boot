@@ -1,5 +1,6 @@
 package com.chan.ssb.team;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,9 +39,9 @@ public class TeamController {
         return team;
     }
 
-    @PostMapping("")
-    public ResponseEntity<List<TeamDTO>> createTeams(@RequestBody List<TeamDTO> teamDTOList) {
-        teamService.createTeams(teamDTOList);
+    @PostMapping("/")
+    public ResponseEntity<List<TeamDTO>> createTeams(@Valid @RequestBody TeamDTOListWrapper teamDTOList) {
+        teamService.createTeams(teamDTOList.getTeamDTOList());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

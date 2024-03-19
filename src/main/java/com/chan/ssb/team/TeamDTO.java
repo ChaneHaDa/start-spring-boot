@@ -1,9 +1,16 @@
 package com.chan.ssb.team;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class TeamDTO {
     private long id;
+    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     private String name;
+    @NotEmpty(message = "City must not be empty")
     private String city;
+    @Min(value = 0, message = "Championships must be a positive number")
     private int championships;
 
     public TeamDTO() {
