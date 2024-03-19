@@ -38,22 +38,7 @@ public class TeamController {
         return team;
     }
 
-
     @PostMapping("")
-    public ResponseEntity<TeamDTO> createTeam(@RequestBody TeamDTO teamDTO) {
-        TeamDTO savedTeam = teamService.createTeam(teamDTO);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedTeam.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).build();
-
-    }
-
-    @PostMapping("/list")
     public ResponseEntity<List<TeamDTO>> createTeams(@RequestBody List<TeamDTO> teamDTOList) {
         teamService.createTeams(teamDTOList);
 
@@ -69,11 +54,19 @@ public class TeamController {
 
     @PutMapping("/{id}")
     public TeamDTO updateTeam(@PathVariable long id, TeamDTO team) {
+        TeamDTO teamDTO = teamService.getTeamById(id);
+        if(teamDTO == null) {
+            throw new TeamNotFoundException("Team not found with id: " + id);
+        }
         return teamService.updateTeam(id, team);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTeam(@PathVariable long id) {
+        TeamDTO teamDTO = teamService.getTeamById(id);
+        if(teamDTO == null) {
+            throw new TeamNotFoundException("Team not found with id: " + id);
+        }
         teamService.deleteTeam(id);
     }
 
