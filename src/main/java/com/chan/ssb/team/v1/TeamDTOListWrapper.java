@@ -1,7 +1,6 @@
-package com.chan.ssb.team;
+package com.chan.ssb.team.v1;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 

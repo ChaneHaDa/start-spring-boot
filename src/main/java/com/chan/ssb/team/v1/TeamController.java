@@ -1,5 +1,6 @@
-package com.chan.ssb.team;
+package com.chan.ssb.team.v1;
 
+import com.chan.ssb.team.TeamNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@RequestMapping("/team")
+@RequestMapping("api/v1/team")
 @RestController
 public class TeamController {
 
