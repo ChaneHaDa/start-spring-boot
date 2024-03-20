@@ -1,4 +1,4 @@
-package com.chan.ssb.team.v1;
+package com.chan.ssb.team;
 
 import org.springframework.stereotype.Service;
 
