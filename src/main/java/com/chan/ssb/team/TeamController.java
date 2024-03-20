@@ -39,7 +39,7 @@ public class TeamController {
         return team;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<List<TeamDTO>> createTeams(@Valid @RequestBody TeamDTOListWrapper teamDTOList) {
         teamService.createTeams(teamDTOList.getTeamDTOList());
 
