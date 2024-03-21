@@ -1,9 +1,11 @@
 package com.chan.ssb.team;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+@JsonFilter("TeamFilter")
 public class TeamDTO {
     private long id;
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
