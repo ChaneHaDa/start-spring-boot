@@ -1,13 +1,9 @@
 package com.chan.ssb.team;
 
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,7 +25,7 @@ public class TeamController {
         this.teamService = teamService;
     }
     @GetMapping("")
-    public MappingJacksonValue getAllTeams() {
+    public CollectionModel<EntityModel<TeamDTO>> getAllTeams() {
         List<TeamDTO> teams = teamService.getAllTeams();
         if(teams.isEmpty()) {
             throw new TeamNotFoundException("No teams found");
@@ -44,34 +40,23 @@ public class TeamController {
                 )
                 .toList();
 
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(CollectionModel.of(teamEntityModels,
-                linkTo(methodOn(TeamController.class).getAllTeams()).withSelfRel()));
-        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("name", "city");
-        FilterProvider filters = new SimpleFilterProvider().addFilter("TeamFilter", filter);
-        mappingJacksonValue.setFilters(filters);
-
-        return mappingJacksonValue;
+        return CollectionModel.of(teamEntityModels,
+                linkTo(methodOn(TeamController.class).getAllTeams()).withSelfRel());
     }
 
     @GetMapping("/{id}")
-    public MappingJacksonValue getTeam(@PathVariable long id) {
+    public EntityModel<TeamDTO> getTeam(@PathVariable long id) {
         TeamDTO team = teamService.getTeamById(id);
         if(team == null) {
             throw new TeamNotFoundException("Team not found with id: " + id);
         }
 
-        EntityModel<TeamDTO> teamEntityModel = EntityModel.of(team,
+        return EntityModel.of(team,
                 linkTo(methodOn(TeamController.class).getTeam(id)).withSelfRel(),
                 linkTo(methodOn(TeamController.class).getAllTeams()).withRel("teams"),
                 linkTo(methodOn(TeamController.class).deleteTeam(id)).withRel("delete"),
-                linkTo(methodOn(TeamController.class).updateTeam(id, team)).withRel("update"));
-
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(teamEntityModel);
-        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("name", "city");
-        FilterProvider filters = new SimpleFilterProvider().addFilter("TeamFilter", filter);
-        mappingJacksonValue.setFilters(filters);
-
-        return mappingJacksonValue;
+                linkTo(methodOn(TeamController.class).updateTeam(id, team)).withRel("update")
+        );
     }
 
     @PostMapping("")
