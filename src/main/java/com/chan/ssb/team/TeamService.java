@@ -1,5 +1,6 @@
 package com.chan.ssb.team;
 
+import com.chan.ssb.player.PlayerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,5 +42,12 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
+    public List<PlayerDTO> getPlayersByTeamId(long id) {
+        Team team = teamRepository.findById(id).orElse(null);
+        if(team == null) {
+            return null;
+        }
+        return team.getPlayers().stream().map(PlayerDTO::fromEntity).toList();
+    }
 
 }

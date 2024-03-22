@@ -1,6 +1,10 @@
 package com.chan.ssb.team;
 
+import com.chan.ssb.player.Player;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity(name = "team")
 public class Team {
@@ -13,6 +17,10 @@ public class Team {
     private String city;
     @Column
     private int championships;
+
+    @OneToMany(mappedBy = "team")
+    @JsonIgnore
+    private List<Player> players;
 
     public Team() {
     }
@@ -38,6 +46,10 @@ public class Team {
 
     public int getChampionships() {
         return championships;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
 }
