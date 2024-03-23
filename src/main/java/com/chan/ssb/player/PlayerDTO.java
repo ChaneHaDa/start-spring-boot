@@ -1,21 +1,25 @@
 package com.chan.ssb.player;
 
+import com.chan.ssb.team.Team;
+
 public class PlayerDTO {
 
-    private Long id;
+    private long id;
     private String name;
     private long number;
+    private Team team;
 
     public PlayerDTO() {
     }
 
-    public PlayerDTO(Long id, String name, long number) {
+    public PlayerDTO(long id, String name, long number, Team team) {
         this.id = id;
         this.name = name;
         this.number = number;
+        this.team = team;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -25,6 +29,10 @@ public class PlayerDTO {
 
     public long getNumber() {
         return number;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 
     public void setId(Long id) {
@@ -39,7 +47,11 @@ public class PlayerDTO {
         this.number = number;
     }
 
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
     public static PlayerDTO fromEntity(Player player) {
-        return new PlayerDTO(player.getId(), player.getName(), player.getNumber());
+        return new PlayerDTO(player.getId(), player.getName(), player.getNumber(), player.getTeam());
     }
 }

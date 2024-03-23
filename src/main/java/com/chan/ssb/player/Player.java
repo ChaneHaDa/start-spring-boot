@@ -21,10 +21,11 @@ public class Player {
     public Player() {
     }
 
-    public Player(long id, String name, long number) {
+    public Player(long id, String name, long number, Team team) {
         this.id = id;
         this.name = name;
         this.number = number;
+        this.team = team;
     }
 
     public long getId() {
@@ -37,6 +38,10 @@ public class Player {
 
     public long getNumber() {
         return number;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 
 
