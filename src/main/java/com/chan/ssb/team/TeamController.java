@@ -1,6 +1,5 @@
 package com.chan.ssb.team;
 
-import com.chan.ssb.exception.EntityNotFoundException;
 import com.chan.ssb.player.PlayerDTO;
 import com.chan.ssb.player.PlayerDTOListWrapper;
 import com.chan.ssb.player.PlayerService;

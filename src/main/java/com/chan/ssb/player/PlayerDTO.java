@@ -1,8 +1,5 @@
 package com.chan.ssb.player;
 
-import com.chan.ssb.team.Team;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class PlayerDTO {
 
     private long id;
