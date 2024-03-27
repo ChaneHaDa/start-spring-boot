@@ -1,6 +1,5 @@
 package com.chan.ssb.exception;
 
-import com.chan.ssb.team.TeamNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,7 +20,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(TeamNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     public final ResponseEntity<Object> handleTeamNotFoundException(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity(errorDetails, HttpStatus.NOT_FOUND);

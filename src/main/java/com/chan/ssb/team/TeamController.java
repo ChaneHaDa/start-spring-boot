@@ -1,5 +1,6 @@
 package com.chan.ssb.team;
 
+import com.chan.ssb.exception.EntityNotFoundException;
 import com.chan.ssb.player.PlayerDTO;
 import com.chan.ssb.player.PlayerDTOListWrapper;
 import com.chan.ssb.player.PlayerService;
@@ -32,9 +33,6 @@ public class TeamController {
     @GetMapping("")
     public CollectionModel<EntityModel<TeamDTO>> getAllTeams() {
         List<TeamDTO> teams = teamService.getAllTeams();
-        if(teams.isEmpty()) {
-            throw new TeamNotFoundException("No teams found");
-        }
 
         List<EntityModel<TeamDTO>> teamEntityModels = teams.stream()
                 .map(team -> EntityModel.of(team,
@@ -52,9 +50,6 @@ public class TeamController {
     @GetMapping("/{id}")
     public EntityModel<TeamDTO> getTeam(@PathVariable long id) {
         TeamDTO team = teamService.getTeamById(id);
-        if(team == null) {
-            throw new TeamNotFoundException("Team not found with id: " + id);
-        }
 
         return EntityModel.of(team,
                 linkTo(methodOn(TeamController.class).getTeam(id)).withSelfRel(),
@@ -85,10 +80,6 @@ public class TeamController {
 
     @PutMapping("/{id}")
     public EntityModel<TeamDTO> updateTeam(@PathVariable long id, TeamDTO team) {
-        TeamDTO teamDTO = teamService.getTeamById(id);
-        if(teamDTO == null) {
-            throw new TeamNotFoundException("Team not found with id: " + id);
-        }
         return EntityModel.of(teamService.updateTeam(id, team),
                 linkTo(methodOn(TeamController.class).getTeam(id)).withSelfRel(),
                 linkTo(methodOn(TeamController.class).getAllTeams()).withRel("teams"));
@@ -96,22 +87,15 @@ public class TeamController {
 
     @DeleteMapping("/{id}")
     public EntityModel<TeamDTO> deleteTeam(@PathVariable long id) {
-        TeamDTO teamDTO = teamService.getTeamById(id);
-        if(teamDTO == null) {
-            throw new TeamNotFoundException("Team not found with id: " + id);
-        }
         teamService.deleteTeam(id);
 
-        return EntityModel.of(teamDTO,
+        return EntityModel.of(null,
                 linkTo(methodOn(TeamController.class).getAllTeams()).withRel("teams"));
     }
 
     @GetMapping("/{id}/players")
     public CollectionModel<EntityModel<PlayerDTO>> getPlayersByTeamId(@PathVariable long id) {
         List<PlayerDTO> players = teamService.getPlayersByTeamId(id);
-        if(players == null) {
-            throw new TeamNotFoundException("Team not found with id: " + id);
-        }
 
         List<EntityModel<PlayerDTO>> playerEntityModels = players.stream()
                 .map(player -> EntityModel.of(player,
@@ -127,9 +111,6 @@ public class TeamController {
     @PostMapping("/{id}/players")
     public ResponseEntity<CollectionModel<EntityModel<PlayerDTO>>> createPlayers(@PathVariable long id, @Valid @RequestBody PlayerDTOListWrapper playerDTOList) {
         TeamDTO team = teamService.getTeamById(id);
-        if(team == null) {
-            throw new TeamNotFoundException("Team not found with id: " + id);
-        }
 
         Team teamEntity = new Team(team.getId(), team.getName(), team.getCity(), team.getChampionships());
 

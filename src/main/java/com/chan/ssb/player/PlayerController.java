@@ -2,7 +2,7 @@ package com.chan.ssb.player;
 
 import com.chan.ssb.team.Team;
 import com.chan.ssb.team.TeamDTO;
-import com.chan.ssb.team.TeamNotFoundException;
+import com.chan.ssb.exception.EntityNotFoundException;
 import com.chan.ssb.team.TeamService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,32 +19,24 @@ public class PlayerController {
     }
 
     @GetMapping("{id}")
-    public PlayerDTO getPlayerById(Long id) {
+    public PlayerDTO getPlayerById(@PathVariable long id) {
         return playerService.getPlayerById(id);
     }
 
     @PutMapping("{id}")
-    public PlayerDTO updatePlayer(Long id, PlayerDTO playerDTO) {
+    public PlayerDTO updatePlayer(@PathVariable long id, PlayerDTO playerDTO) {
         TeamDTO teamDTO = teamService.getTeamById(playerDTO.getTeamId());
-        if(teamDTO == null) {
-            throw new TeamNotFoundException("Team not found with id: " + playerDTO.getTeamId());
-        }
-
         Team team = new Team(teamDTO.getId(), teamDTO.getName(), teamDTO.getCity(), teamDTO.getChampionships());
         playerDTO.setTeamId(team.getId());
 
-        playerService.updatePlayer(id, playerDTO);
-
-        PlayerDTO updatedPlayer = playerService.getPlayerById(id);
+        PlayerDTO updatedPlayer = playerService.updatePlayer(id, playerDTO);
 
         return updatedPlayer;
     }
 
     @DeleteMapping("{id}")
-    public void deletePlayer(Long id) {
+    public void deletePlayer(@PathVariable long id) {
         playerService.deletePlayer(id);
     }
-
-
 
 }
