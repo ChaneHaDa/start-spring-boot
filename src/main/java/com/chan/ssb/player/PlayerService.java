@@ -1,5 +1,6 @@
 package com.chan.ssb.player;
 
+import com.chan.ssb.team.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.List;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final TeamService teamService;
 
-    public PlayerService(PlayerRepository playerRepository) {
+    public PlayerService(PlayerRepository playerRepository, TeamService teamService) {
         this.playerRepository = playerRepository;
+        this.teamService = teamService;
     }
 
 
@@ -25,18 +28,29 @@ public class PlayerService {
     }
 
     public PlayerDTO createPlayer(PlayerDTO playerDTO) {
-        Player player = new Player(playerDTO.getId(), playerDTO.getName(), playerDTO.getNumber(), playerDTO.getTeam());
+        TeamDTO teamDTO = teamService.getTeamById(playerDTO.getTeamId());
+        if(teamDTO == null) {
+            throw new TeamNotFoundException("Team not found with id: " + playerDTO.getTeamId());
+        }
+        Team team = new Team(teamDTO.getId(), teamDTO.getName(), teamDTO.getCity(), teamDTO.getChampionships());
+
+        Player player = new Player(playerDTO.getId(), playerDTO.getName(), playerDTO.getNumber(), team);
 
         return PlayerDTO.fromEntity(playerRepository.save(player));
     }
 
-    public List<PlayerDTO> createPlayers(List<PlayerDTO> playerDTOList) {
-        List<Player> players = playerDTOList.stream().map(player -> new Player(player.getId(), player.getName(), player.getNumber(), player.getTeam())).toList();
+    public List<PlayerDTO> createPlayers(Team team, List<PlayerDTO> playerDTOList) {
+        List<Player> players = playerDTOList.stream().map(player -> new Player(player.getId(), player.getName(), player.getNumber(), team)).toList();
         return playerRepository.saveAll(players).stream().map(PlayerDTO::fromEntity).toList();
     }
 
     public PlayerDTO updatePlayer(long id, PlayerDTO playerDTO) {
-        Player player = new Player(id, playerDTO.getName(), playerDTO.getNumber(), playerDTO.getTeam());
+        TeamDTO teamDTO = teamService.getTeamById(playerDTO.getTeamId());
+        if(teamDTO == null) {
+            throw new TeamNotFoundException("Team not found with id: " + playerDTO.getTeamId());
+        }
+        Team team = new Team(teamDTO.getId(), teamDTO.getName(), teamDTO.getCity(), teamDTO.getChampionships());
+        Player player = new Player(id, playerDTO.getName(), playerDTO.getNumber(), team);
         return PlayerDTO.fromEntity(playerRepository.save(player));
     }
 

@@ -1,5 +1,8 @@
 package com.chan.ssb.team;
 
+import com.chan.ssb.player.PlayerDTO;
+import com.chan.ssb.player.PlayerDTOListWrapper;
+import com.chan.ssb.player.PlayerService;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -20,9 +23,11 @@ public class TeamController {
     // Team: id, name, city, championships
 
     private final TeamService teamService;
+    private final PlayerService playerService;
 
-    public TeamController(TeamService teamService) {
+    public TeamController(TeamService teamService, PlayerService playerService) {
         this.teamService = teamService;
+        this.playerService = playerService;
     }
     @GetMapping("")
     public CollectionModel<EntityModel<TeamDTO>> getAllTeams() {
@@ -99,6 +104,52 @@ public class TeamController {
 
         return EntityModel.of(teamDTO,
                 linkTo(methodOn(TeamController.class).getAllTeams()).withRel("teams"));
+    }
+
+    @GetMapping("/{id}/players")
+    public CollectionModel<EntityModel<PlayerDTO>> getPlayersByTeamId(@PathVariable long id) {
+        List<PlayerDTO> players = teamService.getPlayersByTeamId(id);
+        if(players == null) {
+            throw new TeamNotFoundException("Team not found with id: " + id);
+        }
+
+        List<EntityModel<PlayerDTO>> playerEntityModels = players.stream()
+                .map(player -> EntityModel.of(player,
+                        linkTo(methodOn(TeamController.class).getPlayersByTeamId(id)).withSelfRel(),
+                        linkTo(methodOn(TeamController.class).getTeam(id)).withRel("team")))
+                .toList();
+
+        return CollectionModel.of(playerEntityModels,
+                linkTo(methodOn(TeamController.class).getPlayersByTeamId(id)).withSelfRel(),
+                linkTo(methodOn(TeamController.class).getTeam(id)).withRel("team"));
+    }
+
+    @PostMapping("/{id}/players")
+    public ResponseEntity<CollectionModel<EntityModel<PlayerDTO>>> createPlayers(@PathVariable long id, @Valid @RequestBody PlayerDTOListWrapper playerDTOList) {
+        TeamDTO team = teamService.getTeamById(id);
+        if(team == null) {
+            throw new TeamNotFoundException("Team not found with id: " + id);
+        }
+
+        Team teamEntity = new Team(team.getId(), team.getName(), team.getCity(), team.getChampionships());
+
+        List<PlayerDTO> savedPlayers = playerService.createPlayers(teamEntity, playerDTOList.getPlayers());
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("")
+                .build()
+                .toUri();
+
+        List<EntityModel<PlayerDTO>> playerEntityModels = savedPlayers.stream()
+                .map(player -> EntityModel.of(player,
+                        linkTo(methodOn(TeamController.class).getPlayersByTeamId(id)).withSelfRel(),
+                        linkTo(methodOn(TeamController.class).getTeam(id)).withRel("team")))
+                .toList();
+
+        return ResponseEntity.created(location).body(CollectionModel.of(playerEntityModels,
+                linkTo(methodOn(TeamController.class).getPlayersByTeamId(id)).withSelfRel(),
+                linkTo(methodOn(TeamController.class).getTeam(id)).withRel("team")));
     }
 
 }

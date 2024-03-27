@@ -1,22 +1,23 @@
 package com.chan.ssb.player;
 
 import com.chan.ssb.team.Team;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class PlayerDTO {
 
     private long id;
     private String name;
     private long number;
-    private Team team;
+    private long teamId;
 
     public PlayerDTO() {
     }
 
-    public PlayerDTO(long id, String name, long number, Team team) {
+    public PlayerDTO(long id, String name, long number, long teamId) {
         this.id = id;
         this.name = name;
         this.number = number;
-        this.team = team;
+        this.teamId = teamId;
     }
 
     public long getId() {
@@ -31,8 +32,8 @@ public class PlayerDTO {
         return number;
     }
 
-    public Team getTeam() {
-        return team;
+    public long getTeamId() {
+        return teamId;
     }
 
     public void setId(Long id) {
@@ -47,11 +48,11 @@ public class PlayerDTO {
         this.number = number;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setTeamId(long teamId) {
+        this.teamId = teamId;
     }
 
     public static PlayerDTO fromEntity(Player player) {
-        return new PlayerDTO(player.getId(), player.getName(), player.getNumber(), player.getTeam());
+        return new PlayerDTO(player.getId(), player.getName(), player.getNumber(), player.getTeam().getId());
     }
 }
