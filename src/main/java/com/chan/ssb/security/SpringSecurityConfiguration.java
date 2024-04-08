@@ -4,9 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SpringSecurityConfiguration {
@@ -21,7 +20,7 @@ public class SpringSecurityConfiguration {
 //                .httpBasic(Customizer.withDefaults());
 
         http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/players").authenticated()
+                        .requestMatchers("/api/players", "/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").authenticated()
                         .requestMatchers("/api/v1/team").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
@@ -29,4 +28,5 @@ public class SpringSecurityConfiguration {
         http.csrf().disable();
         return http.build();
     }
+
 }
