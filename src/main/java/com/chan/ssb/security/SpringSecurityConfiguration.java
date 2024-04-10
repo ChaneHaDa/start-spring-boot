@@ -6,6 +6,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -50,6 +51,15 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
+//        return NoOpPasswordEncoder.getInstance();
+//        return Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_5();
+//        return Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+//        return SCryptPasswordEncoder.defaultsForSpringSecurity_v4_1();
+//        return SCryptPasswordEncoder.defaultsForSpringSecurity_v5_8();
+//        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_2();
+//        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+//        return new StandardPasswordEncoder();
+
     }
 }
