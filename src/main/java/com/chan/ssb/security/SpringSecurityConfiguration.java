@@ -21,11 +21,13 @@ public class SpringSecurityConfiguration {
 //                .httpBasic(Customizer.withDefaults());
 
         http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/players", "/api/v1/team").authenticated()
+                        .requestMatchers("/api/players", "/api/v1/team", "/h2-console/**").authenticated()
                         .requestMatchers("/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/user").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
+
+        http.headers().frameOptions().sameOrigin();
 
         http.csrf().disable();
         return http.build();
