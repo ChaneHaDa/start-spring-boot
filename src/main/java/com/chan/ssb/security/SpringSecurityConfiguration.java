@@ -1,5 +1,6 @@
 package com.chan.ssb.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -7,9 +8,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 public class SpringSecurityConfiguration {
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //        http.authorizeHttpRequests(requests -> requests.anyRequest().permitAll())
@@ -20,9 +26,23 @@ public class SpringSecurityConfiguration {
 //                .formLogin(Customizer.withDefaults())
 //                .httpBasic(Customizer.withDefaults());
 
+        http.cors().configurationSource(new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(List.of("http://localhost:3000"));
+                config.setAllowedMethods(List.of("GET", "POST"));
+                config.setAllowCredentials(true);
+                config.setAllowedHeaders(List.of("*"));
+                config.setExposedHeaders(List.of("Authorization"));
+                config.setMaxAge(1800L);
+                return config;
+            }
+        }).and().csrf().disable();
+
         http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/players", "/api/v1/team", "/h2-console/**").authenticated()
-                        .requestMatchers("/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/user").permitAll()
+                        .requestMatchers("/api/players", "/h2-console/**").authenticated()
+                        .requestMatchers("/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/user", "/api/v1/team").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

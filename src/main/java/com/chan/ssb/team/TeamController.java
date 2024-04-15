@@ -18,6 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequestMapping("api/v1/team")
 @RestController
+//@CrossOrigin(origins="http://localhost:3000")
 public class TeamController {
 
     // Team: id, name, city, championships
