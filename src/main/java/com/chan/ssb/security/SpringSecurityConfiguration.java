@@ -44,14 +44,17 @@ public class SpringSecurityConfiguration {
             }
         });
 
-        http.csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/user/**", "/h2-console/**")
+        http.csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/user/**", "/authority", "/h2-console/**")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
 
         http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/**", "/h2-console/**").authenticated()
-                        .requestMatchers("/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/user/**").permitAll()
+//                        .requestMatchers("/h2-console/**", "/authority").hasAnyAuthority("VIEWADMIN", "VIEWMANAGER")
+//                        .requestMatchers("/api/**").hasAuthority("VIEWAPI")
+                        .requestMatchers("/h2-console/**", "/authority").hasRole("ADMIN")
+                        .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/user/**", "/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

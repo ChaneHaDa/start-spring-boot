@@ -1,20 +1,21 @@
 package com.chan.ssb.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SiteUserDTO {
 
     private long id;
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    private String role;
 
     public SiteUserDTO() {
     }
 
-    public SiteUserDTO(long id, String username, String password, String role) {
+    public SiteUserDTO(long id, String username, String password) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.role = role;
     }
 
     public long getId() {
@@ -29,9 +30,6 @@ public class SiteUserDTO {
         return password;
     }
 
-    public String getRole() {
-        return role;
-    }
 
     public void setId(long id){
         this.id = id;
@@ -45,12 +43,8 @@ public class SiteUserDTO {
         this.password = password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public static SiteUserDTO fromEntity(SiteUser user) {
         if(user == null) return null;
-        return new SiteUserDTO(user.getId(), user.getUsername(), user.getPassword(), user.getRole());
+        return new SiteUserDTO(user.getId(), user.getUsername(), user.getPassword());
     }
 }

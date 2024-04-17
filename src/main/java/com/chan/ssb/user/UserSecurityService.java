@@ -1,5 +1,6 @@
 package com.chan.ssb.user;
 
+import com.chan.ssb.authority.Authority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserSecurityService implements UserDetailsService {
@@ -28,9 +30,15 @@ public class UserSecurityService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         SiteUser siteUser = _siteUser.get();
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(siteUser.getRole()));
-        return new User(siteUser.getUsername(), siteUser.getPassword(), authorities);
 
+        return new User(siteUser.getUsername(), siteUser.getPassword(), getGrantedAuthorities(siteUser.getAuthorities()));
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+        }
+        return grantedAuthorities;
     }
 }
