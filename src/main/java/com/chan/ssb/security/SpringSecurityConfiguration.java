@@ -1,6 +1,8 @@
 package com.chan.ssb.security;
 
 import com.chan.ssb.filter.CsrfCookieFilter;
+import com.chan.ssb.filter.CustomFilter1;
+import com.chan.ssb.filter.CustomFilter2;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,8 +47,11 @@ public class SpringSecurityConfiguration {
         });
 
         http.csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/user/**", "/authority", "/h2-console/**")
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+            .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new CustomFilter2(), BasicAuthenticationFilter.class)
+//            .addFilterAfter(new CustomFilter1(), BasicAuthenticationFilter.class)
+            .addFilterAt(new CustomFilter1(), BasicAuthenticationFilter.class);
 
 
         http.authorizeHttpRequests((requests) -> requests
