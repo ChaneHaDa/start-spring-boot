@@ -1,8 +1,8 @@
-package com.chan.ssb.security;
+package com.chan.ssb.config;
 
 import com.chan.ssb.filter.CsrfCookieFilter;
-import com.chan.ssb.filter.CustomFilter1;
-import com.chan.ssb.filter.CustomFilter2;
+import com.chan.ssb.filter.JWTTokenGeneratorFilter;
+import com.chan.ssb.filter.JWTTokenValidatorFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +29,9 @@ public class SpringSecurityConfiguration {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
-        http.securityContext((context) -> context.requireExplicitSave(false))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
+        http.sessionManagement((sessionManagement) ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
 
         http.cors().configurationSource(new CorsConfigurationSource() {
             @Override
@@ -49,17 +50,15 @@ public class SpringSecurityConfiguration {
         http.csrf((csrf)-> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/user/**", "/authority", "/h2-console/**")
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-            .addFilterBefore(new CustomFilter2(), BasicAuthenticationFilter.class)
-//            .addFilterAfter(new CustomFilter1(), BasicAuthenticationFilter.class)
-            .addFilterAt(new CustomFilter1(), BasicAuthenticationFilter.class);
+            .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class);
+
 
 
         http.authorizeHttpRequests((requests) -> requests
-//                        .requestMatchers("/h2-console/**", "/authority").hasAnyAuthority("VIEWADMIN", "VIEWMANAGER")
-//                        .requestMatchers("/api/**").hasAuthority("VIEWAPI")
-                        .requestMatchers("/h2-console/**", "/authority").hasRole("ADMIN")
+                        .requestMatchers("/authority").hasRole("ADMIN")
                         .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/user/**", "/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/user/**", "/api-docs","/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

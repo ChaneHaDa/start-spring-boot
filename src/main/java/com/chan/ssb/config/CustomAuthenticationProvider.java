@@ -1,4 +1,4 @@
-package com.chan.ssb.security;
+package com.chan.ssb.config;
 
 import com.chan.ssb.user.UserSecurityService;
 import org.springframework.security.authentication.AuthenticationProvider;
