@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -30,6 +32,14 @@ public class TeamController {
         this.teamService = teamService;
         this.playerService = playerService;
     }
+
+    @PostMapping("/filter")
+//    @PreFilter("filterObject.name != 'test'")
+    @PostFilter("filterObject.name != 'test'")
+    public List<TeamDTO> getTeamsByFilter(@RequestBody List<TeamDTO> teams) {
+        return teams;
+    }
+
     @GetMapping("")
     public CollectionModel<EntityModel<TeamDTO>> getAllTeams() {
         List<TeamDTO> teams = teamService.getAllTeams();
