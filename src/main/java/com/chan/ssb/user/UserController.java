@@ -20,18 +20,18 @@ public class UserController {
         this.authorityService = authorityService;
     }
 
-    @PostMapping("")
-    public SiteUserDTO createUser(SiteUserDTO userDTO) {
-        SiteUserDTO createdUser = userService.createSiteUser(userDTO);
-        if(createdUser != null) {
-            AuthorityDTO authorityDTO = new AuthorityDTO(0, createdUser.getId(), "ROLE_USER");
-            authorityService.createAuthority(authorityDTO);
-            if(createdUser.getUsername().equals("admin")) {
-                AuthorityDTO adminAuthorityDTO = new AuthorityDTO(0, createdUser.getId(), "ROLE_ADMIN");
-                authorityService.createAuthority(adminAuthorityDTO);
-            }
-        }
-
-        return createdUser;
-    }
+//    @PostMapping("")
+//    public SiteUserDTO createUser(SiteUserDTO userDTO) {
+//        SiteUserDTO createdUser = userService.createSiteUser(userDTO);
+//        if(createdUser != null) {
+//            AuthorityDTO authorityDTO = new AuthorityDTO(0, createdUser.getId(), "ROLE_USER");
+//            authorityService.createAuthority(authorityDTO);
+//            if(createdUser.getUsername().equals("admin")) {
+//                AuthorityDTO adminAuthorityDTO = new AuthorityDTO(0, createdUser.getId(), "ROLE_ADMIN");
+//                authorityService.createAuthority(adminAuthorityDTO);
+//            }
+//        }
+//
+//        return createdUser;
+//    }
 }

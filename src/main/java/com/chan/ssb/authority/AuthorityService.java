@@ -15,19 +15,19 @@ public class AuthorityService {
         this.userService = userService;
     }
 
-    public AuthorityDTO createAuthority(AuthorityDTO authorityDTO) {
-        SiteUserDTO siteUserDTO = userService.getSiteUserById(authorityDTO.getSiteUserId());
-        SiteUser siteUser = new SiteUser(siteUserDTO.getId(), siteUserDTO.getUsername(), siteUserDTO.getPassword());
-        Authority authority = new Authority(authorityDTO.getId(), siteUser, authorityDTO.getName());
-        Authority savedAuthority;
-
-        try {
-            savedAuthority = authorityRepository.save(authority);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("An error occurred while saving the authority");
-        }
-
-        return AuthorityDTO.fromEntity(savedAuthority);
-    }
+//    public AuthorityDTO createAuthority(AuthorityDTO authorityDTO) {
+//        SiteUserDTO siteUserDTO = userService.getSiteUserById(authorityDTO.getSiteUserId());
+//        SiteUser siteUser = new SiteUser(siteUserDTO.getId(), siteUserDTO.getUsername(), siteUserDTO.getPassword());
+//        Authority authority = new Authority(authorityDTO.getId(), siteUser, authorityDTO.getName());
+//        Authority savedAuthority;
+//
+//        try {
+//            savedAuthority = authorityRepository.save(authority);
+//        } catch (Exception e) {
+//            throw new IllegalArgumentException("An error occurred while saving the authority");
+//        }
+//
+//        return AuthorityDTO.fromEntity(savedAuthority);
+//    }
 
 }

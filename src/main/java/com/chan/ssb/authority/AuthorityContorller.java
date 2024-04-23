@@ -11,8 +11,8 @@ public class AuthorityContorller {
         this.authorityService = authorityService;
     }
 
-    @PostMapping("/authority")
-    public AuthorityDTO createAuthority(AuthorityDTO authorityDTO) {
-        return authorityService.createAuthority(authorityDTO);
-    }
+//    @PostMapping("/authority")
+//    public AuthorityDTO createAuthority(AuthorityDTO authorityDTO) {
+//        return authorityService.createAuthority(authorityDTO);
+//    }
 }
