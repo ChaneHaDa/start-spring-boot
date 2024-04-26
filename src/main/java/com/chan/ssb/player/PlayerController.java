@@ -1,5 +1,6 @@
 package com.chan.ssb.player;
 
+import com.chan.ssb.aspect.MyLog;
 import com.chan.ssb.team.Team;
 import com.chan.ssb.team.TeamDTO;
 import com.chan.ssb.team.TeamService;
@@ -24,6 +25,7 @@ public class PlayerController {
         this.teamService = teamService;
     }
 
+    @MyLog
     @GetMapping("")
     public CollectionModel<EntityModel<PlayerDTO>> getAllPlayers() {
         List<PlayerDTO> players = playerService.getAllPlayers();
