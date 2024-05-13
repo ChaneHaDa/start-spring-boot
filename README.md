@@ -5,7 +5,7 @@
 
 ## Environment
 * JAVA 17
-* Gradle-Froovy
+* Gradle-Groovy
 * Spring Boot 3.25
 
 ## 설명
